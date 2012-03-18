@@ -31,6 +31,36 @@ When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
   # HINT: use String#split to split up the rating_list, then
   #   iterate over the ratings and reuse the "When I check..." or
   #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
+  rList = rating_list.split(/,\s*/i)
+  if uncheck
+    rList.each { |rating|
+      uncheck("ratings_#{rating}")
+    }
+  else
+    # p "Ratings: #{rList}"
+    rList.each { |rating|
+      check("ratings_#{rating}")
+    }
+  end
+
+end
+
+Then /I should (not )?see the following ratings: (.*)/ do |visible, rating_list|
+  rList = rating_list.split(/,\s*/i)
+  visBool = (visible != "not ")
+  # p "#{visible.class}=#{visBool}"
+
+  # p rList.include?("R")
+
+  page.all(:css, "#movies tbody tr td[2]").each { |rating| 
+    p "#{rating.text.class} :: #{rList} :: #{rList.include?(rating.text)} :: #{visBool}"
+    assert rList.include?(rating.text) == visBool, "Bad movie in list"
+  }
+end
+
+
+When /^(?:|I )press (.*)$/ do |button|
+  click_button(button)
 end
 
 When /I sort movies alphabetically/ do |uncheck, rating_list|
