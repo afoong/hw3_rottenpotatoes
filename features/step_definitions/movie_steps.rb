@@ -15,12 +15,21 @@ end
 # Make sure that one string (regexp) occurs before or after another one
 #   on the same page
 
-Then /I should see "(.*)" before "(.*)"/ do |e1, e2|
+Then /I should see (.*) before (.*)/ do |e1, e2|
   #  ensure that that e1 occurs before e2.
   #  page.content  is the entire content of the page as a string.
-  # p page.content
+  # p page.body
   # p 'fjklwelgkaweglka'
-  assert false, "Unimplmemented"
+
+  # regex = /.*#{e1}.*#{e1}/
+
+  # matches = page.body =~ regex
+
+  assert page.body.index(e1) < page.body.index(e2), "Expected to see #{e1} before #{e2}"
+
+  # p "match: #{!matches}"
+
+  # assert matches, "Expected to see #{e1} before #{e2}"
 end
 
 # Make it easier to express checking or unchecking several boxes at once
@@ -79,12 +88,14 @@ Then /I should (not )?see the following ratings: (.*)/ do |visible, rating_list|
   }
 end
 
-
 When /^(?:|I )press (.*)$/ do |button|
   click_button(button)
 end
 
-When /I sort movies alphabetically/ do |uncheck, rating_list|
+When /I sort movies alphabetically/ do
+
+  step %{I follow "title_header"}
+  # assert true
   # HINT: use String#split to split up the rating_list, then
   #   iterate over the ratings and reuse the "When I check..." or
   #   "When I uncheck..." steps in lines 89-95 of web_steps.rb

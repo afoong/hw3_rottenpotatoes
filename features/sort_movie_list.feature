@@ -23,6 +23,7 @@ Background: movies have been added to database
 
 Scenario: sort movies alphabetically
   # your steps here
+  Given I check the following ratings: G, PG, PG-13, NC-17, R
   When I sort movies alphabetically
   Then I should see 2001: A Space Odyssey before Aladdin
   Then I should see Aladdin before Amelie
